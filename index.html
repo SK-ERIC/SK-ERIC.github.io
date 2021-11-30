@@ -228,7 +228,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-11-30 18:51:53" itemprop="dateModified" datetime="2021-11-30T18:51:53+08:00">2021-11-30</time>
+                <time title="修改时间：2021-11-30 19:05:11" itemprop="dateModified" datetime="2021-11-30T19:05:11+08:00">2021-11-30</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -267,16 +267,6 @@
       
           <h2 id="实现防抖函数-debounce"><a href="#实现防抖函数-debounce" class="headerlink" title="实现防抖函数(debounce)"></a>实现防抖函数(debounce)</h2><p>防抖函数原理:在事件被触发 n 秒后再执行回调，如果在这 n 秒内又被触发，则重新计时。</p>
 <p>那么与节流函数的区别直接看这个动画实现即可。</p>
-<p><img src="https://ae01.alicdn.com/kf/H9348988a754f4ffcaa4c2eafabade0099.png" alt="debounce.gif"></p>
-<p>手写简化版:</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 防抖函数</span></span><br><span class="line"><span class="keyword">const</span> debounce = <span class="function">(<span class="params">fn, delay</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">let</span> timer = <span class="literal">null</span>;</span><br><span class="line">  <span class="keyword">return</span> <span class="function">(<span class="params">...args</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="built_in">clearTimeout</span>(timer);</span><br><span class="line">    timer = <span class="built_in">setTimeout</span>(<span class="function">() =&gt;</span> &#123;</span><br><span class="line">      fn.apply(<span class="built_in">this</span>, args);</span><br><span class="line">    &#125;, delay);</span><br><span class="line">  &#125;;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-
-<p>适用场景:</p>
-<ul>
-<li>按钮提交场景:防止多次提交按钮，只执行最后提交的一次</li>
-<li>服务端验证场景:表单验证需要服务端配合，只执行一段连续的输入事件的最后一次，还有搜索联想词功能类似</li>
-</ul>
-<p>生存环境请用 <a target="_blank" rel="noopener" href="https://www.lodashjs.com/docs/lodash.debounce">lodash.debounce</a></p>
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2021/11/29/JS%E7%AC%94%E8%AF%95%E9%A2%98/#more" rel="contents">
