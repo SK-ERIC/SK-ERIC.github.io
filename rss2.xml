@@ -9,8 +9,387 @@
     <atom:link href="http://example.com/rss2.xml" rel="self" type="application/rss+xml"/>
     
     <description>每一个你讨厌的现在，都有一个不够努力的曾经。</description>
-    <pubDate>Wed, 01 Dec 2021 11:32:33 GMT</pubDate>
+    <pubDate>Wed, 01 Dec 2021 11:45:25 GMT</pubDate>
     <generator>http://hexo.io/</generator>
+    
+    <item>
+      <title>input上传重复文件异常问题</title>
+      <link>http://example.com/2021/12/01/input%E4%B8%8A%E4%BC%A0%E9%87%8D%E5%A4%8D%E6%96%87%E4%BB%B6%E5%BC%82%E5%B8%B8%E9%97%AE%E9%A2%98/</link>
+      <guid>http://example.com/2021/12/01/input%E4%B8%8A%E4%BC%A0%E9%87%8D%E5%A4%8D%E6%96%87%E4%BB%B6%E5%BC%82%E5%B8%B8%E9%97%AE%E9%A2%98/</guid>
+      <pubDate>Wed, 01 Dec 2021 11:45:25 GMT</pubDate>
+      
+      <description>&lt;h1 id=&quot;input-type-39-file-39-连续上传同一个文件不触发-onChange-事件-或-Upload-组件只调用了一次-onChange-函数&quot;&gt;&lt;a href=&quot;#input-type-39-file-39-连续上传同一个文件不触发-onChange-事件-或-Upload-组件只调用了一次-onChange-函数&quot; class=&quot;headerlink&quot; title=&quot;input[type=&amp;#39;file&amp;#39;] 连续上传同一个文件不触发 onChange 事件 或 Upload 组件只调用了一次 onChange 函数&quot;&gt;&lt;/a&gt;&lt;code&gt;input[type=&amp;#39;file&amp;#39;]&lt;/code&gt; 连续上传同一个文件不触发 &lt;code&gt;onChange&lt;/code&gt; 事件 或 Upload 组件只调用了一次 &lt;code&gt;onChange&lt;/code&gt; 函数&lt;/h1&gt;&lt;p&gt;原因为 &lt;code&gt;onChange&lt;/code&gt; 的触发条件是 &lt;code&gt;value&lt;/code&gt;的变化。当我们选取文件上传后，&lt;code&gt;value&lt;/code&gt;的值为该文件在磁盘中的地址。如：&lt;code&gt;D:\test\1.docx&lt;/code&gt; 。因此，我们改变&lt;code&gt;value&lt;/code&gt;值即可。&lt;/p&gt;</description>
+      
+      
+      
+      <content:encoded><![CDATA[<h1 id="input-type-39-file-39-连续上传同一个文件不触发-onChange-事件-或-Upload-组件只调用了一次-onChange-函数"><a href="#input-type-39-file-39-连续上传同一个文件不触发-onChange-事件-或-Upload-组件只调用了一次-onChange-函数" class="headerlink" title="input[type=&#39;file&#39;] 连续上传同一个文件不触发 onChange 事件 或 Upload 组件只调用了一次 onChange 函数"></a><code>input[type=&#39;file&#39;]</code> 连续上传同一个文件不触发 <code>onChange</code> 事件 或 Upload 组件只调用了一次 <code>onChange</code> 函数</h1><p>原因为 <code>onChange</code> 的触发条件是 <code>value</code>的变化。当我们选取文件上传后，<code>value</code>的值为该文件在磁盘中的地址。如：<code>D:\test\1.docx</code> 。因此，我们改变<code>value</code>值即可。</p><span id="more"></span><h2 id="背景一：原生input"><a href="#背景一：原生input" class="headerlink" title="背景一：原生input"></a>背景一：原生<code>input</code></h2><p>如果使用的是原生<code>input</code>标签，只需在点击事件的时候置空<code>value</code>值即可。</p><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">&lt;input</span><br><span class="line">  type=&quot;file&quot;</span><br><span class="line">  accept=&quot;.docx&quot;</span><br><span class="line">  onClick=&#123;(e) =&gt; &#123;</span><br><span class="line">    (e.target as HTMLInputElement).value = &quot;&quot;;</span><br><span class="line">  &#125;&#125;</span><br><span class="line">  onChange=&#123;(e) =&gt; &#123;</span><br><span class="line">    console.log(`e`, e.target.files);</span><br><span class="line">  &#125;&#125;</span><br><span class="line">/&gt;</span><br></pre></td></tr></table></figure><h2 id="背景二：采用了Antd的Input组件上传file"><a href="#背景二：采用了Antd的Input组件上传file" class="headerlink" title="背景二：采用了Antd的Input组件上传file"></a>背景二：采用了<code>Antd</code>的<code>Input</code>组件上传<code>file</code></h2><p>此时不能直接的使用背景一的方法去改变<code>value</code>，否则你会得到以下信息：</p><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Uncaught DOMException: Failed to set the &#x27;value&#x27; property on &#x27;HTMLInputElement&#x27;: This input element accepts a filename, which may only be programmatically set to the empty string.</span><br></pre></td></tr></table></figure><blockquote><p>翻译为：无法在“<code>HTMLInputElement</code>”上设置“<code>value</code>”属性：此输入元素接受文件名，该文件名只能以编程方式设置为空字符串。</p></blockquote><p>这对于文件输入无效，因为浏览器只允许读取而不是写入输入。</p><p>可调用<code>Input</code>身上的<code>setValue(value: string, callback?: () =&gt; void): void</code>方法，即可解决。</p><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">const uploadIptRef = useRef&lt;Input&gt;(null);</span><br><span class="line">&lt;Input</span><br><span class="line">  ref=&#123;uploadIptRef&#125;</span><br><span class="line">  type=&quot;file&quot;</span><br><span class="line">  accept=&quot;.docx&quot;</span><br><span class="line">  onClick=&#123;(e) =&gt; &#123;</span><br><span class="line">    uploadIptRef.current?.setValue(&quot;&quot;);</span><br><span class="line">  &#125;&#125;</span><br><span class="line">  onChange=&#123;(e) =&gt; &#123;</span><br><span class="line">    console.log(`e`, e.target.files);</span><br><span class="line">  &#125;&#125;</span><br><span class="line">/&gt;;</span><br></pre></td></tr></table></figure><h3 id="setValue在ant-design-components-input-Input-tsx中表现为"><a href="#setValue在ant-design-components-input-Input-tsx中表现为" class="headerlink" title="setValue在ant-design\components\input\Input.tsx中表现为"></a><code>setValue</code>在<code>ant-design\components\input\Input.tsx</code>中表现为</h3><figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="title">setValue</span>(<span class="params">value: <span class="built_in">string</span>, callback?: () =&gt; <span class="built_in">void</span></span>)</span> &#123;</span><br><span class="line">    <span class="keyword">if</span> (<span class="built_in">this</span>.props.value === <span class="literal">undefined</span>) &#123;</span><br><span class="line">        <span class="built_in">this</span>.setState(&#123; value &#125;, callback);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        callback?.();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><p>渲染组件</p><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">renderComponent = (&#123; getPrefixCls, direction, input &#125;: ConfigConsumerProps) =&gt; &#123;</span><br><span class="line">  const &#123; value, focused &#125; = this.state;</span><br><span class="line">  const &#123; prefixCls: customizePrefixCls, bordered = true &#125; = this.props;</span><br><span class="line">  const prefixCls = getPrefixCls(&quot;input&quot;, customizePrefixCls);</span><br><span class="line">  this.direction = direction;</span><br><span class="line"></span><br><span class="line">  return (</span><br><span class="line">    &lt;SizeContext.Consumer&gt;</span><br><span class="line">      &#123;(size) =&gt; (</span><br><span class="line">        &lt;ClearableLabeledInput</span><br><span class="line">          size=&#123;size&#125;</span><br><span class="line">          &#123;...this.props&#125;</span><br><span class="line">          prefixCls=&#123;prefixCls&#125;</span><br><span class="line">          inputType=&quot;input&quot;</span><br><span class="line">          value=&#123;fixControlledValue(value)&#125;</span><br><span class="line">          element=&#123;this.renderInput(prefixCls, size, bordered, input)&#125;</span><br><span class="line">          handleReset=&#123;this.handleReset&#125;</span><br><span class="line">          ref=&#123;this.saveClearableInput&#125;</span><br><span class="line">          direction=&#123;direction&#125;</span><br><span class="line">          focused=&#123;focused&#125;</span><br><span class="line">          triggerFocus=&#123;this.focus&#125;</span><br><span class="line">          bordered=&#123;bordered&#125;</span><br><span class="line">        /&gt;</span><br><span class="line">      )&#125;</span><br><span class="line">    &lt;/SizeContext.Consumer&gt;</span><br><span class="line">  );</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure><h2 id="背景三：采用了Ant-design的Upload组件，遇到onChange只调用一次问题"><a href="#背景三：采用了Ant-design的Upload组件，遇到onChange只调用一次问题" class="headerlink" title="背景三：采用了Ant design的Upload组件，遇到onChange只调用一次问题"></a>背景三：采用了<code>Ant design</code>的<code>Upload</code>组件，遇到<code>onChange</code>只调用一次问题</h2><p>可参考 <a href="https://github.com/ant-design/ant-design/issues/2423">#2423</a></p>]]></content:encoded>
+      
+      
+      <category domain="http://example.com/categories/%E5%89%8D%E7%AB%AF/">前端</category>
+      
+      
+      <category domain="http://example.com/tags/BUG/">BUG</category>
+      
+      
+      <comments>http://example.com/2021/12/01/input%E4%B8%8A%E4%BC%A0%E9%87%8D%E5%A4%8D%E6%96%87%E4%BB%B6%E5%BC%82%E5%B8%B8%E9%97%AE%E9%A2%98/#disqus_thread</comments>
+      
+    </item>
+    
+    <item>
+      <title>ASCII对照表</title>
+      <link>http://example.com/2021/12/01/ASCII%E5%AF%B9%E7%85%A7%E8%A1%A8/</link>
+      <guid>http://example.com/2021/12/01/ASCII%E5%AF%B9%E7%85%A7%E8%A1%A8/</guid>
+      <pubDate>Wed, 01 Dec 2021 11:44:31 GMT</pubDate>
+      
+      <description>&lt;h1 id=&quot;ASCII-对照表&quot;&gt;&lt;a href=&quot;#ASCII-对照表&quot; class=&quot;headerlink&quot; title=&quot;ASCII 对照表&quot;&gt;&lt;/a&gt;ASCII 对照表&lt;/h1&gt;&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th align=&quot;left&quot;&gt;ASCII 值&lt;/th&gt;
+&lt;th align=&quot;left&quot;&gt;控制字符&lt;/th&gt;
+&lt;th align=&quot;left&quot;&gt;ASCII 值&lt;/th&gt;
+&lt;th align=&quot;left&quot;&gt;控制字符&lt;/th&gt;
+&lt;th align=&quot;left&quot;&gt;ASCII 值&lt;/th&gt;
+&lt;th align=&quot;left&quot;&gt;控制字符&lt;/th&gt;
+&lt;th align=&quot;left&quot;&gt;ASCII 值&lt;/th&gt;
+&lt;th align=&quot;left&quot;&gt;控制字符&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;&lt;tr&gt;
+&lt;td align=&quot;left&quot;&gt;0&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;NUT&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;32&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;(space)&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;64&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;@&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;96&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;、&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td align=&quot;left&quot;&gt;1&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;SOH&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;33&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;!&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;65&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;A&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;97&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;a&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td align=&quot;left&quot;&gt;2&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;STX&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;34&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;“&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;66&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;B&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;98&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;b&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td align=&quot;left&quot;&gt;3&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;ETX&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;35&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;#&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;67&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;C&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;99&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;c&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td align=&quot;left&quot;&gt;4&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;EOT&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;36&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;$&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;68&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;D&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;100&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;d&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td align=&quot;left&quot;&gt;5&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;ENQ&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;37&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;%&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;69&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;E&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;101&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;e&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td align=&quot;left&quot;&gt;6&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;ACK&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;38&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;&amp;amp;&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;70&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;F&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;102&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;f&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td align=&quot;left&quot;&gt;7&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;BEL&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;39&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;,&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;71&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;G&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;103&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;g&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td align=&quot;left&quot;&gt;8&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;BS&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;40&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;(&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;72&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;H&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;104&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;h&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td align=&quot;left&quot;&gt;9&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;HT&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;41&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;)&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;73&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;I&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;105&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;i&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td align=&quot;left&quot;&gt;10&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;LF&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;42&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;*&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;74&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;J&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;106&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;j&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td align=&quot;left&quot;&gt;11&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;VT&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;43&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;+&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;75&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;K&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;107&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;k&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td align=&quot;left&quot;&gt;12&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;FF&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;44&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;,&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;76&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;L&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;108&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;l&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td align=&quot;left&quot;&gt;13&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;CR&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;45&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;-&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;77&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;M&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;109&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;m&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td align=&quot;left&quot;&gt;14&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;SO&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;46&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;.&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;78&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;N&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;110&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;n&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td align=&quot;left&quot;&gt;15&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;SI&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;47&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;/&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;79&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;O&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;111&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;o&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td align=&quot;left&quot;&gt;16&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;DLE&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;48&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;0&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;80&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;P&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;112&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;p&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td align=&quot;left&quot;&gt;17&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;DCI&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;49&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;1&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;81&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;Q&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;113&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;q&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td align=&quot;left&quot;&gt;18&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;DC2&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;50&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;2&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;82&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;R&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;114&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;r&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td align=&quot;left&quot;&gt;19&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;DC3&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;51&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;3&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;83&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;S&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;115&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;s&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td align=&quot;left&quot;&gt;20&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;DC4&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;52&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;4&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;84&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;T&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;116&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;t&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td align=&quot;left&quot;&gt;21&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;NAK&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;53&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;5&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;85&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;U&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;117&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;u&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td align=&quot;left&quot;&gt;22&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;SYN&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;54&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;6&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;86&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;V&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;118&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;v&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td align=&quot;left&quot;&gt;23&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;TB&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;55&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;7&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;87&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;W&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;119&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;w&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td align=&quot;left&quot;&gt;24&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;CAN&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;56&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;8&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;88&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;X&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;120&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;x&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td align=&quot;left&quot;&gt;25&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;EM&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;57&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;9&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;89&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;Y&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;121&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;y&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td align=&quot;left&quot;&gt;26&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;SUB&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;58&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;:&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;90&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;Z&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;122&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;z&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td align=&quot;left&quot;&gt;27&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;ESC&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;59&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;;&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;91&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;[&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;123&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;{&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td align=&quot;left&quot;&gt;28&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;FS&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;60&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;&amp;lt;&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;92&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;/&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;124&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;|&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td align=&quot;left&quot;&gt;29&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;GS&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;61&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;=&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;93&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;]&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;125&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;}&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td align=&quot;left&quot;&gt;30&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;RS&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;62&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;&amp;gt;&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;94&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;^&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;126&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;`&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td align=&quot;left&quot;&gt;31&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;US&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;63&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;?&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;95&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;_&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;127&lt;/td&gt;
+&lt;td align=&quot;left&quot;&gt;DEL&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;&lt;/table&gt;</description>
+      
+      
+      
+      <content:encoded><![CDATA[<h1 id="ASCII-对照表"><a href="#ASCII-对照表" class="headerlink" title="ASCII 对照表"></a>ASCII 对照表</h1><table><thead><tr><th align="left">ASCII 值</th><th align="left">控制字符</th><th align="left">ASCII 值</th><th align="left">控制字符</th><th align="left">ASCII 值</th><th align="left">控制字符</th><th align="left">ASCII 值</th><th align="left">控制字符</th></tr></thead><tbody><tr><td align="left">0</td><td align="left">NUT</td><td align="left">32</td><td align="left">(space)</td><td align="left">64</td><td align="left">@</td><td align="left">96</td><td align="left">、</td></tr><tr><td align="left">1</td><td align="left">SOH</td><td align="left">33</td><td align="left">!</td><td align="left">65</td><td align="left">A</td><td align="left">97</td><td align="left">a</td></tr><tr><td align="left">2</td><td align="left">STX</td><td align="left">34</td><td align="left">“</td><td align="left">66</td><td align="left">B</td><td align="left">98</td><td align="left">b</td></tr><tr><td align="left">3</td><td align="left">ETX</td><td align="left">35</td><td align="left">#</td><td align="left">67</td><td align="left">C</td><td align="left">99</td><td align="left">c</td></tr><tr><td align="left">4</td><td align="left">EOT</td><td align="left">36</td><td align="left">$</td><td align="left">68</td><td align="left">D</td><td align="left">100</td><td align="left">d</td></tr><tr><td align="left">5</td><td align="left">ENQ</td><td align="left">37</td><td align="left">%</td><td align="left">69</td><td align="left">E</td><td align="left">101</td><td align="left">e</td></tr><tr><td align="left">6</td><td align="left">ACK</td><td align="left">38</td><td align="left">&amp;</td><td align="left">70</td><td align="left">F</td><td align="left">102</td><td align="left">f</td></tr><tr><td align="left">7</td><td align="left">BEL</td><td align="left">39</td><td align="left">,</td><td align="left">71</td><td align="left">G</td><td align="left">103</td><td align="left">g</td></tr><tr><td align="left">8</td><td align="left">BS</td><td align="left">40</td><td align="left">(</td><td align="left">72</td><td align="left">H</td><td align="left">104</td><td align="left">h</td></tr><tr><td align="left">9</td><td align="left">HT</td><td align="left">41</td><td align="left">)</td><td align="left">73</td><td align="left">I</td><td align="left">105</td><td align="left">i</td></tr><tr><td align="left">10</td><td align="left">LF</td><td align="left">42</td><td align="left">*</td><td align="left">74</td><td align="left">J</td><td align="left">106</td><td align="left">j</td></tr><tr><td align="left">11</td><td align="left">VT</td><td align="left">43</td><td align="left">+</td><td align="left">75</td><td align="left">K</td><td align="left">107</td><td align="left">k</td></tr><tr><td align="left">12</td><td align="left">FF</td><td align="left">44</td><td align="left">,</td><td align="left">76</td><td align="left">L</td><td align="left">108</td><td align="left">l</td></tr><tr><td align="left">13</td><td align="left">CR</td><td align="left">45</td><td align="left">-</td><td align="left">77</td><td align="left">M</td><td align="left">109</td><td align="left">m</td></tr><tr><td align="left">14</td><td align="left">SO</td><td align="left">46</td><td align="left">.</td><td align="left">78</td><td align="left">N</td><td align="left">110</td><td align="left">n</td></tr><tr><td align="left">15</td><td align="left">SI</td><td align="left">47</td><td align="left">/</td><td align="left">79</td><td align="left">O</td><td align="left">111</td><td align="left">o</td></tr><tr><td align="left">16</td><td align="left">DLE</td><td align="left">48</td><td align="left">0</td><td align="left">80</td><td align="left">P</td><td align="left">112</td><td align="left">p</td></tr><tr><td align="left">17</td><td align="left">DCI</td><td align="left">49</td><td align="left">1</td><td align="left">81</td><td align="left">Q</td><td align="left">113</td><td align="left">q</td></tr><tr><td align="left">18</td><td align="left">DC2</td><td align="left">50</td><td align="left">2</td><td align="left">82</td><td align="left">R</td><td align="left">114</td><td align="left">r</td></tr><tr><td align="left">19</td><td align="left">DC3</td><td align="left">51</td><td align="left">3</td><td align="left">83</td><td align="left">S</td><td align="left">115</td><td align="left">s</td></tr><tr><td align="left">20</td><td align="left">DC4</td><td align="left">52</td><td align="left">4</td><td align="left">84</td><td align="left">T</td><td align="left">116</td><td align="left">t</td></tr><tr><td align="left">21</td><td align="left">NAK</td><td align="left">53</td><td align="left">5</td><td align="left">85</td><td align="left">U</td><td align="left">117</td><td align="left">u</td></tr><tr><td align="left">22</td><td align="left">SYN</td><td align="left">54</td><td align="left">6</td><td align="left">86</td><td align="left">V</td><td align="left">118</td><td align="left">v</td></tr><tr><td align="left">23</td><td align="left">TB</td><td align="left">55</td><td align="left">7</td><td align="left">87</td><td align="left">W</td><td align="left">119</td><td align="left">w</td></tr><tr><td align="left">24</td><td align="left">CAN</td><td align="left">56</td><td align="left">8</td><td align="left">88</td><td align="left">X</td><td align="left">120</td><td align="left">x</td></tr><tr><td align="left">25</td><td align="left">EM</td><td align="left">57</td><td align="left">9</td><td align="left">89</td><td align="left">Y</td><td align="left">121</td><td align="left">y</td></tr><tr><td align="left">26</td><td align="left">SUB</td><td align="left">58</td><td align="left">:</td><td align="left">90</td><td align="left">Z</td><td align="left">122</td><td align="left">z</td></tr><tr><td align="left">27</td><td align="left">ESC</td><td align="left">59</td><td align="left">;</td><td align="left">91</td><td align="left">[</td><td align="left">123</td><td align="left">{</td></tr><tr><td align="left">28</td><td align="left">FS</td><td align="left">60</td><td align="left">&lt;</td><td align="left">92</td><td align="left">/</td><td align="left">124</td><td align="left">|</td></tr><tr><td align="left">29</td><td align="left">GS</td><td align="left">61</td><td align="left">=</td><td align="left">93</td><td align="left">]</td><td align="left">125</td><td align="left">}</td></tr><tr><td align="left">30</td><td align="left">RS</td><td align="left">62</td><td align="left">&gt;</td><td align="left">94</td><td align="left">^</td><td align="left">126</td><td align="left">`</td></tr><tr><td align="left">31</td><td align="left">US</td><td align="left">63</td><td align="left">?</td><td align="left">95</td><td align="left">_</td><td align="left">127</td><td align="left">DEL</td></tr></tbody></table><span id="more"></span><h2 id="特殊字符解释"><a href="#特殊字符解释" class="headerlink" title="特殊字符解释"></a>特殊字符解释</h2><table><thead><tr><th>NUL 空</th><th>VT 垂直制表</th><th>SYN 空转同步</th></tr></thead><tbody><tr><td>STX 正文开始</td><td>CR 回车</td><td>CAN 作废</td></tr><tr><td>ETX 正文结束</td><td>SO 移位输出</td><td>EM 纸尽</td></tr><tr><td>EOY 传输结束</td><td>SI 移位输入</td><td>SUB 换置</td></tr><tr><td>ENQ 询问字符</td><td>DLE 空格</td><td>ESC 换码</td></tr><tr><td>ACK 承认</td><td>DC1 设备控制 1</td><td>FS 文字分隔符</td></tr><tr><td>BEL 报警</td><td>DC2 设备控制 2</td><td>GS 组分隔符</td></tr><tr><td>BS 退一格</td><td>DC3 设备控制 3</td><td>RS 记录分隔符</td></tr><tr><td>HT 横向列表</td><td>DC4 设备控制 4</td><td>US 单元分隔符</td></tr><tr><td>LF 换行</td><td>NAK 否定</td><td>DEL 删除</td></tr></tbody></table>]]></content:encoded>
+      
+      
+      <category domain="http://example.com/categories/%E8%B5%84%E6%BA%90/">资源</category>
+      
+      
+      <category domain="http://example.com/tags/%E8%B5%84%E6%BA%90/">资源</category>
+      
+      
+      <comments>http://example.com/2021/12/01/ASCII%E5%AF%B9%E7%85%A7%E8%A1%A8/#disqus_thread</comments>
+      
+    </item>
     
     <item>
       <title>移动端1px问题</title>
